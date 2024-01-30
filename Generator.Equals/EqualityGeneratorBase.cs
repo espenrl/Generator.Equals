@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Generator.Equals
 {
@@ -95,6 +96,16 @@ namespace Generator.Equals
                     writer.WriteLine(
                         $"&& new {comparerType.ToFQF()}().Equals(this.{propertyName}!, other.{propertyName}!)");
                 }
+            }
+            else if (memberSymbol.HasAttribute(attributesMetadata.StringEquality))
+            {
+                var attribute = memberSymbol.GetAttribute(attributesMetadata.StringEquality);
+                var memberAccess = (MemberAccessExpressionSyntax)attribute?.ConstructorArguments[0].Value!;
+                var stringComparerMemberName = memberAccess.Name.Identifier.ValueText;
+
+                // example: System.StringComparer.Ordinal.Equals("A", "A")
+                writer.WriteLine(
+                    $"&& System.StringComparer.{stringComparerMemberName}.Equals(this.{propertyName}!, other.{propertyName}!)");
             }
             else if (
                 memberSymbol.HasAttribute(attributesMetadata.DefaultEquality) ||
@@ -215,6 +226,18 @@ namespace Generator.Equals
                     {
                         writer.Write($"new {comparerType.ToFQF()}()");
                     }
+                });
+            }
+            else if (memberSymbol.HasAttribute(attributesMetadata.StringEquality))
+            {
+                BuildHashCodeAdd(() =>
+                {
+                    var attribute = memberSymbol.GetAttribute(attributesMetadata.StringEquality);
+                    var memberAccess = (MemberAccessExpressionSyntax)attribute?.ConstructorArguments[0].Value!;
+                    var stringComparerMemberName = memberAccess.Name.Identifier.ValueText;
+
+                    // example: System.StringComparer.Ordinal
+                    writer.Write($"System.StringComparer.{stringComparerMemberName}");
                 });
             }
             else if (

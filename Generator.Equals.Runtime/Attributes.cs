@@ -76,4 +76,17 @@ namespace Generator.Equals
             FieldOrPropertyName = fieldOrPropertyName;
         }
     }
+
+    [GeneratedCode("Generator.Equals", "1.0.0.0")]
+    [Conditional("GENERATOR_EQUALS")]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    public class StringEqualityAttribute : Attribute
+    {
+        public StringComparison StringComparison { get; }
+
+        public StringEqualityAttribute(StringComparison stringComparison)
+        {
+            StringComparison = stringComparison;
+        }
+    }
 }

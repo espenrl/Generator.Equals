@@ -34,7 +34,7 @@ namespace Generator.Equals
 
             var combined = context.CompilationProvider.Combine(provider.Collect());
 
-            context.RegisterSourceOutput(combined, (spc, pair) => Execute(spc, pair.Left, pair.Right));
+            context.RegisterImplementationSourceOutput(combined, (spc, pair) => Execute(spc, pair.Left, pair.Right));
         }
 
 
@@ -49,7 +49,8 @@ namespace Generator.Equals
                 compilation.GetTypeByMetadataName("Generator.Equals.UnorderedEqualityAttribute")!,
                 compilation.GetTypeByMetadataName("Generator.Equals.ReferenceEqualityAttribute")!,
                 compilation.GetTypeByMetadataName("Generator.Equals.SetEqualityAttribute")!,
-                compilation.GetTypeByMetadataName("Generator.Equals.CustomEqualityAttribute")!
+                compilation.GetTypeByMetadataName("Generator.Equals.CustomEqualityAttribute")!,
+                compilation.GetTypeByMetadataName("Generator.Equals.StringEqualityAttribute")!
             );
 
             var handledSymbols = new HashSet<string>();
